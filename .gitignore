@@ -12,22 +12,22 @@
 *.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
-*.out
-coverage.html
+#*.out
+#coverage.html
 
 # Dependency directories (remove the comment below to include it)
-#vendor/
+vendor/
 
 # Output of GoReleaser
 dist/
 
 # Visual Studio Code files
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
+#.vscode/*
+#!.vscode/settings.json
+#!.vscode/tasks.json
+#!.vscode/launch.json
+#!.vscode/extensions.json
+#*.code-workspace
 
 # Local History for Visual Studio Code
 .history/

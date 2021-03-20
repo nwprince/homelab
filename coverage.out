@@ -1,0 +1,3 @@
+mode: atomic
+github.com/nwprince/homelab/cmd/server/main.go:6.13,8.2 1 0
+github.com/nwprince/homelab/cmd/server/main.go:10.21,12.2 1 1
