@@ -55,7 +55,11 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/nwprince/homelab/cmd/server/main.go (50.0%)</option>
+				<option value="file0">github.com/nwprince/homelab/cmd/server/main.go (71.4%)</option>
+				
+				<option value="file1">github.com/nwprince/homelab/cmd/server/panic/exception.go (0.0%)</option>
+				
+				<option value="file2">github.com/nwprince/homelab/cmd/server/routes/portfolio.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -81,14 +85,91 @@
 		<pre class="file" id="file0" style="display: none">// Application which greets you.
 package main
 
-import "fmt"
+import (
+        "fmt"
+        "log"
+        "net/http"
+        "os"
+        "time"
 
-func main() <span class="cov0" title="0">{
-        fmt.Println(greet())
+        "github.com/nwprince/homelab/cmd/server/routes"
+        "github.com/yarf-framework/yarf"
+)
+
+const TLS bool = false
+
+func main() <span class="cov1" title="1">{
+        y := yarf.New()
+        // y.NotFound = panic.Exception
+
+        certFile := getCertFile()
+
+        keyFile := getKeyFile()
+
+        y.Add("/", new(routes.Portfolio))
+
+        fmt.Println("starting server")
+        s := &amp;http.Server{
+                Addr:           ":8080",
+                Handler:        y,
+                ReadTimeout:    10 * time.Second,
+                WriteTimeout:   10 * time.Second,
+                MaxHeaderBytes: 1 &lt;&lt; 20,
+        }
+
+        var err error
+        if TLS </span><span class="cov0" title="0">{
+                err = s.ListenAndServeTLS(certFile, keyFile)
+        }</span> else<span class="cov1" title="1"> {
+                err = s.ListenAndServe()
+        }</span>
+        <span class="cov0" title="0">if err != nil </span><span class="cov0" title="0">{
+                log.Fatalln(err)
+        }</span>
+        <span class="cov0" title="0">fmt.Println("Ending program")</span>
+}
+
+func getCertFile() string <span class="cov10" title="2">{
+        certFile := os.Getenv("TLS_CERT_FILE")
+        if len(certFile) == 0 </span><span class="cov0" title="0">{
+                log.Fatal("Expected certfile path")
+        }</span>
+        <span class="cov10" title="2">return certFile</span>
+}
+
+func getKeyFile() string <span class="cov10" title="2">{
+        keyFile := os.Getenv("TLS_KEY_FILE")
+        if len(keyFile) == 0 </span><span class="cov0" title="0">{
+                log.Fatal("Expected keyFile path")
+        }</span>
+
+        <span class="cov10" title="2">return keyFile</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package panic
+
+import "github.com/yarf-framework/yarf"
+
+func Exception(c *yarf.Context) <span class="cov0" title="0">{
+        c.Render("This is a custom exception handler")
 }</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package routes
 
-func greet() string <span class="cov8" title="1">{
-        return "Hi!"
+import (
+        "github.com/yarf-framework/yarf"
+)
+
+type Portfolio struct {
+        yarf.Resource
+}
+
+func (p *Portfolio) Get(c *yarf.Context) error <span class="cov8" title="1">{
+        c.Render("Portfolio endpoint hit")
+
+        return nil
 }</span>
 </pre>
 		
