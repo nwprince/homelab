@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/nwprince/homelab/cmd/server/panic"
@@ -15,13 +16,13 @@ import (
 
 const TLS bool = false
 
+var mblnDevelopment bool = false
+
 func main() {
 	y := yarf.New()
 	y.NotFound = panic.Exception
 
-	certFile := getCertFile()
-
-	keyFile := getKeyFile()
+	mblnDevelopment = strings.ToLower(os.Getenv("DEVELOPMENT_MACHINE")) == "true"
 
 	y.Add("/", new(routes.Portfolio))
 
@@ -36,6 +37,8 @@ func main() {
 
 	var err error
 	if TLS {
+		certFile := getCertFile()
+		keyFile := getKeyFile()
 		err = s.ListenAndServeTLS(certFile, keyFile)
 	} else {
 		err = s.ListenAndServe()
@@ -48,7 +51,7 @@ func main() {
 
 func getCertFile() string {
 	certFile := os.Getenv("TLS_CERT_FILE")
-	if len(certFile) == 0 {
+	if !mblnDevelopment && len(certFile) == 0 {
 		log.Fatal("Expected certfile path")
 	}
 	return certFile
@@ -56,7 +59,7 @@ func getCertFile() string {
 
 func getKeyFile() string {
 	keyFile := os.Getenv("TLS_KEY_FILE")
-	if len(keyFile) == 0 {
+	if !mblnDevelopment && len(keyFile) == 0 {
 		log.Fatal("Expected keyFile path")
 	}
 
