@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/yarf-framework/yarf"
 )
 
@@ -9,7 +11,7 @@ type Portfolio struct {
 }
 
 func (p *Portfolio) Get(c *yarf.Context) error {
-	c.Render("Portfolio endpoint hit")
+	c.Redirect("https://sites.google.com/view/nprincedev", http.StatusSeeOther)
 
 	return nil
 }
